@@ -11,14 +11,17 @@ import {Route,Switch,Redirect} from 'react-router-dom';
 interface State {
 	list:ShoppingItem[];
 	isLogged:boolean;
-	token:string | undefined;
+	token:string;
 	loading:boolean;
 	error:string;
 }
 
 interface BackendMessage {
-	message?:string;
-	token?:string;
+	message:string;
+}
+
+interface Token {
+	token:string;
 }
 
 class App extends React.Component<{},State> {
@@ -75,7 +78,7 @@ class App extends React.Component<{},State> {
 				alert("Register success");
 			} else {
 				const temp = await response.json();
-				let data = temp as BackendMessage;
+				let data = temp as Token;
 				this.setState({
 					token:data.token,
 					isLogged:true,
@@ -129,42 +132,46 @@ class App extends React.Component<{},State> {
 	}
 	
 	getList = () => {
+		const requestHeaders: HeadersInit = new Headers();
+		requestHeaders.set("Content-type","application/json");
+		requestHeaders.append("token",this.state.token);
 		const request = new Request("/api/shopping",{
 			method:"GET",
-			headers:{
-				"Content-type":"application/json",
-			}
+			headers:requestHeaders
 		})
 		this.handleFetch(request,"getlist");
 	}
 	
 	addToList = (item:ShoppingItem) => {
+		const requestHeaders: HeadersInit = new Headers();
+		requestHeaders.set("Content-type","application/json");
+		requestHeaders.append("token",this.state.token);
 		const request = new Request("/api/shopping",{
 			method:"POST",
-			headers:{
-				"Content-type":"application/json"
-			},
+			headers:requestHeaders,
 			body:JSON.stringify(item)
 		})
 		this.handleFetch(request,"addtolist");
 	}
 	
 	removeFromList = (id:number) => {
+		const requestHeaders: HeadersInit = new Headers();
+		requestHeaders.set("Content-type","application/json");
+		requestHeaders.append("token",this.state.token);
 		const request = new Request("/api/shopping/"+id,{
 			method:"DELETE",
-			headers:{
-				"Content-type":"application/json"
-			}
+			headers:requestHeaders
 		})
 		this.handleFetch(request,"removefromlist");
 	}
 	
 	editItem = (item:ShoppingItem) => {
+		const requestHeaders: HeadersInit = new Headers();
+		requestHeaders.set("Content-type","application/json");
+		requestHeaders.append("token",this.state.token);
 		const request = new Request("/api/shopping/"+item.id,{
 			method:"PUT",
-			headers:{
-				"Content-type":"application/json"
-			},
+			headers:requestHeaders,
 			body:JSON.stringify(item)
 		})
 		this.handleFetch(request,"edititem");

@@ -38,26 +38,7 @@ class App extends React.Component<{},State> {
 	}
 	
 	handleFetch = (req:Request,action:string) => {
-		fetch(req).then(response => {
-			if(response.ok) {
-				response.json().then(data => {
-					if(action === "getlist") {
-						let list = data as HotelInfo[];
-						this.setState({
-							list:list
-						})
-					} else {
-						let message = data as BackendMessage;
-						this.getList();
-						console.log(message);
-					} 
-				})
-			} else {
-				console.log("Server responded with a status:"+response.status);
-			}
-		}).catch(error => {
-			console.log(error);
-		})
+		//TODO Handle fetch 
 	} 
 	
 	getList = () => {		
