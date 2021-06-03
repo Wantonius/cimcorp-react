@@ -5,20 +5,30 @@ import ShoppingItem from './models/ShoppingItem';
 import ShoppingForm from './components/ShoppingForm';
 import ShoppingList from './components/ShoppingList';
 import Navbar from './components/Navbar';
+import LoginPage from './components/LoginPage';
 import {Route,Switch,Redirect} from 'react-router-dom';
 
 interface State {
 	list:ShoppingItem[];
+	isLogged:boolean;
+	token:string;
+	loading:boolean;
+	error:string;
 }
 
 interface BackendMessage {
-	message:string;
+	message?:string;
+	token?:string;
 }
 
 class App extends React.Component<{},State> {
 	
 	state:State = {
-		list:[]
+		list:[],
+		isLogged:false,
+		loading:false,
+		token:"",
+		error:""
 	}
 	
 	handleFetch = (req:Request,action:string) => {
@@ -95,6 +105,9 @@ class App extends React.Component<{},State> {
 				<hr/>
 				<Switch>
 					<Route exact path="/" render={() => (
+						<LoginPage />
+					)}/>
+					<Route path="/list" render={() => (
 						<ShoppingList list={this.state.list} removeFromList={this.removeFromList}
 						editItem={this.editItem}/>	
 					)}/>
