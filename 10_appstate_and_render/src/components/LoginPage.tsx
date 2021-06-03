@@ -17,21 +17,25 @@ export default class LoginPage extends React.Component<Props,State> {
 		password:""
 	}
 	
-	onChange = (e:FormEvent<HTMLInputElement>) => {
+	onChange = (e:React.FormEvent<HTMLInputElement>) => {
 		let state:any = {};
 		state[e.currentTarget.name] = e.currentTarget.value;
 		this.setState(state);
 	}
 	
-	onSubmit = (e:React.SyntheticEvent) => {
-		if(e.target.name === "register") {
-			this.props.register(this.props.username, this.props.password);
-		} else {
-			this.props.login(this.props.username, this.props.password);
-		}
+	onRegister = (e:React.SyntheticEvent) => {
+			e.preventDefault();
+			this.props.register(this.state.username, this.state.password);		
 	}
+	
+	onLogin = (e:React.SyntheticEvent) => {
+			e.preventDefault();
+			this.props.login(this.state.username, this.state.password);		
+	}
+		
 
 	render() {
+		return(
 			<form>
 				<label htmlFor="username">Username:</label>
 				<input type="text"
@@ -45,9 +49,9 @@ export default class LoginPage extends React.Component<Props,State> {
 						onChange={this.onChange}
 						value={this.state.password}/>
 				<br/>
-				<button onClick={this.onSubmit} name="register">Register</button>
-				<button onClick={this.onSubmit} name="login">Login</button>
+				<button onClick={this.onRegister}>Register</button>
+				<button onClick={this.onLogin}>Login</button>
 			</form>
-		
+		)
 	}
 }

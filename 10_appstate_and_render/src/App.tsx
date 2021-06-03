@@ -11,7 +11,7 @@ import {Route,Switch,Redirect} from 'react-router-dom';
 interface State {
 	list:ShoppingItem[];
 	isLogged:boolean;
-	token:string;
+	token:string | undefined;
 	loading:boolean;
 	error:string;
 }
@@ -31,8 +31,76 @@ class App extends React.Component<{},State> {
 		error:""
 	}
 	
+	//LOGIN API
+	
+	register = (username:string,password:string) => {
+		const request:Request = new Request("/register",{
+			method:"POST",
+			headers:{
+				"Content-type":"application/json"
+			},
+			body:JSON.stringify({
+				username:username,
+				password:password
+			})
+		})
+		this.handleLogin(request,"register");
+	}
+
+
+	login = (username:string,password:string) => {
+		const request:Request = new Request("/login",{
+			method:"POST",
+			headers:{
+				"Content-type":"application/json"
+			},
+			body:JSON.stringify({
+				username:username,
+				password:password
+			})
+		})
+		this.handleLogin(request,"login");
+	}	
+	
+	handleLogin = async (request:Request,action:string) => {
+		this.setState({
+			loading:true
+		})
+		const response = await fetch(request);
+		this.setState({
+			loading:false
+		})
+		if(response.ok) {
+			if(action === "register") {
+				alert("Register success");
+			} else {
+				const temp = await response.json();
+				let data = temp as BackendMessage;
+				this.setState({
+					token:data.token,
+					isLogged:true,
+					error:""
+				}, () => {
+					this.getList();
+				})
+			}
+		} else {
+			this.setState({
+				error:"Server responded with a status:"+response.statusText
+			})
+		}
+	}
+	//REST API
+	
+	
 	handleFetch = (req:Request,action:string) => {
+		this.setState({
+			loading:true
+		})
 		fetch(req).then(response => {
+			this.setState({
+				loading:false
+			})
 			if(response.ok) {
 				response.json().then(data => {
 					if(action === "getlist") {
@@ -49,10 +117,14 @@ class App extends React.Component<{},State> {
 					console.log("Error parsing JSON:",error);
 				})
 			} else {
-				console.log("Server responded with a status:",response.statusText)
+				this.setState({
+					error:"Server responded with a status:"+response.statusText
+				})
 			}
 		}).catch(error => {
-			console.log(error)
+			this.setState({
+				error:"Server responded with a status:"+error
+			})
 		});
 	}
 	
@@ -60,7 +132,7 @@ class App extends React.Component<{},State> {
 		const request = new Request("/api/shopping",{
 			method:"GET",
 			headers:{
-				"Content-type":"application/json"
+				"Content-type":"application/json",
 			}
 		})
 		this.handleFetch(request,"getlist");
@@ -101,20 +173,28 @@ class App extends React.Component<{},State> {
 	render() {
 		return (
 			<div className="App">
-				<Navbar/>
+				<Navbar isLogged={this.state.isLogged} error={this.state.error} loading={this.state.loading}/>
 				<hr/>
 				<Switch>
-					<Route exact path="/" render={() => (
-						<LoginPage />
-					)}/>
-					<Route path="/list" render={() => (
+					<Route exact path="/" render={() => 
+					this.state.isLogged ? 
+					(<Redirect to="/list"/>) : 
+					(<LoginPage register={this.register} login={this.login} />)
+					}/>
+					<Route path="/list" render={() => this.state.isLogged ? (
 						<ShoppingList list={this.state.list} removeFromList={this.removeFromList}
 						editItem={this.editItem}/>	
-					)}/>
-					<Route path="/form" render={() => (
+					): 
+						(<Redirect to="/"/>)
+					}/>
+					<Route path="/form" render={() => this.state.isLogged? (
 						<ShoppingForm addToList={this.addToList}/>
-					)}/>
-					<Route render={() => (<Redirect to="/"/>)}/>
+					):
+					(<Redirect to="/"/>)
+					}/>
+					<Route render={() => this.state.isLogged ?
+					(<Redirect to="/list"/>) :
+					(<Redirect to="/"/>)}/>
 				</Switch>				
 			</div>
 		);
