@@ -3,7 +3,7 @@ import {register,login} from '../actions/loginActions';
 import {connect, ConnectedProps} from 'react-redux';
 import {AnyAction} from 'redux';
 import {ThunkDispatch} from 'redux-thunk';
-import {LoginState} from '../types/states';
+import {AppState} from '../types/states';
 
 
 interface State {
@@ -11,7 +11,7 @@ interface State {
 	password:string;
 }
 
-const mapStateToProps = (state:LoginState) => {
+const mapStateToProps = (state:AppState) => {
 	return {}
 }
 

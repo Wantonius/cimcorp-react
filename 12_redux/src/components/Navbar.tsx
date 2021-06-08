@@ -1,15 +1,22 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {connect, ConnectedProps} from 'react-redux';
-import {LoginState} from '../types/states';
+import {AppState} from '../types/states';
 
-const mapStateToProps = (state:LoginState) => {
+const mapStateToProps = (state:AppState) => {
 	console.log("Navbar.tsx mapStateToProps");
+	let error:string = "";
+	if(state.shopping.error) {
+		error = state.shopping.error;
+	}
+	if(state.login.error) {
+		error = state.login.error;
+	}
 	return {
-		loading:state.loading,
-		error:state.error,
-		isLogged:state.isLogged,
-		token:state.token
+		loading:state.login.loading,
+		error:error,
+		isLogged:state.login.isLogged,
+		token:state.login.token
 	}
 }
 

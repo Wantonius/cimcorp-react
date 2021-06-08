@@ -4,27 +4,22 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
-import {createStore,applyMiddleware, Store, AnyAction,combineReducers} from 'redux';
+import {createStore, applyMiddleware, Store, AnyAction} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
-import {AppState} from './types/states';
-import loginReducer from './reducers/loginReducer';
-import shoppingReducer from './reducers/shoppingReducer';
+import {HotelState} from './reducers/stateTypes';
+import hotelReducer from './reducers/hotelReducer';
 
-const rootReducer = combineReducers<AppState>({
-	login:loginReducer,
-	shopping:shoppingReducer
-})
 
-const store:Store<AppState,AnyAction> = createStore(rootReducer,applyMiddleware(thunk));
+const store:Store<HotelState, AnyAction> = createStore(hotelReducer,applyMiddleware(thunk));
 
 ReactDOM.render(
   <React.StrictMode>
-  <BrowserRouter>
   <Provider store={store}>
+  <BrowserRouter>
     <App />
-  </Provider>
   </BrowserRouter>
+  </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

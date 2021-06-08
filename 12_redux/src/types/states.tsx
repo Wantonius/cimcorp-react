@@ -1,3 +1,5 @@
+import ShoppingItem from '../models/ShoppingItem';
+
 export interface LoginState {
 	isLogged:boolean;
 	token:string;
@@ -5,3 +7,12 @@ export interface LoginState {
 	error:string;
 }
 
+export interface ShoppingState {
+	list:ShoppingItem[],
+	error:string
+}
+
+export interface AppState {
+	login:LoginState,
+	shopping:ShoppingState
+}

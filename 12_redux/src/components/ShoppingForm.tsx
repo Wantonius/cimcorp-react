@@ -1,9 +1,26 @@
 import React from 'react';
 import ShoppingItem from '../models/ShoppingItem';
+import {addToList} from '../actions/shoppingActions';
+import {ThunkDispatch} from 'redux-thunk';
+import {AppState} from '../types/states';
+import {AnyAction} from 'redux';
+import {connect,ConnectedProps} from 'react-redux';
 
-interface Props {
-	addToList(item:ShoppingItem):void;
+const mapStateToProps = (state:AppState) => {
+	return {
+		token:state.login.token
+	}
 }
+
+const mapDispatchToProps = (dispatch:ThunkDispatch<any,any,AnyAction>) => {
+	return {
+		addToList:(token:string,item:ShoppingItem) => dispatch(addToList(token,item))
+	}
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
 interface State {
 	type:string;
@@ -11,7 +28,7 @@ interface State {
 	price:number;
 }
 
-export default class ShoppingForm extends React.Component<Props,State> {
+class ShoppingForm extends React.Component<PropsFromRedux,State> {
 	
 	state:State = {
 		type:"",
@@ -28,7 +45,7 @@ export default class ShoppingForm extends React.Component<Props,State> {
 	onSubmit = (e:React.SyntheticEvent) => {
 		e.preventDefault();
 		let item = new ShoppingItem(0,this.state.type,this.state.count,this.state.price);
-		this.props.addToList(item);
+		this.props.addToList(this.props.token,item);
 		this.setState({
 			type:"",
 			count:0,
@@ -64,3 +81,5 @@ export default class ShoppingForm extends React.Component<Props,State> {
 	}
 	
 }
+
+export default connector(ShoppingForm);
