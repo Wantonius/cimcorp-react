@@ -22,7 +22,7 @@ const time_to_live_diff = 1000*60*60
 
 //HELPERS
 
-createToken = () => {
+const createToken = () => {
 	const letters = "ABCDEFGHJIKLMNOPabcdefghjklmnop0123456789"
 	let token = "";
 	for(let i=0;i<128;i++) {
@@ -32,7 +32,7 @@ createToken = () => {
 	return token;
 }
 
-isUserLogged = (req,res,next) => {
+const isUserLogged = (req,res,next) => {
 	let token = req.headers.token;
 	if(!token) {
 		return res.status(403).json({message:"forbidden"})
