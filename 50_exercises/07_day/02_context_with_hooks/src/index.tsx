@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import ThemeProvider from './context/ThemeProvider';
+import LocaleProvider from './context/LocaleProvider';
 
 ReactDOM.render(
   <React.StrictMode>
-  <ThemeProvider>
+  <LocaleProvider>
     <App />
-  </ThemeProvider>
+  </LocaleProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
