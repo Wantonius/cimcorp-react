@@ -2,11 +2,17 @@ import {useContext,useEffect,useState} from 'react';
 import ActionContext from '../context/ActionContext';
 import * as actionConstants from '../types/actionConstants';
 import ShoppingItem from '../models/ShoppingItem';
+import useAppState from './useAppState';
 
 interface State {
 	url:string,
 	request:{},
 	action:string
+}
+
+export interface User {
+	username:string,
+	password:string
 }
 
 const useAction = () => {
@@ -17,6 +23,8 @@ const useAction = () => {
 		request:{},
 		action:""
 	})
+	
+	const {token} = useAppState();
 	
 	useEffect(() => {
 		
@@ -61,16 +69,19 @@ const useAction = () => {
 						action.dispatch({
 							type:actionConstants.ADD_NEW_ITEM_SUCCESS
 						})
+						getList(token);
 						return;
 					case "removeitem":
 						action.dispatch({
 							type:actionConstants.REMOVE_ITEM_SUCCESS
 						})
+						getList(token);
 						return;
 					case "edititem":
 						action.dispatch({
 							type:actionConstants.EDIT_ITEM_SUCCESS
 						})
+						getList(token);
 						return;
 					default:
 						return;
@@ -103,7 +114,7 @@ const useAction = () => {
 						})
 						return;
 					case "getlist":
-						if(response.status === 403) {}
+						if(response.status === 403) {
 							action.dispatch({
 								type:actionConstants.LOGOUT_SUCCESS
 							})						
@@ -119,7 +130,7 @@ const useAction = () => {
 						})						
 						return;
 					case "additem":
-						if(response.status === 403) {}
+						if(response.status === 403) {
 							action.dispatch({
 								type:actionConstants.LOGOUT_SUCCESS
 							})						
@@ -135,7 +146,7 @@ const useAction = () => {
 						})						
 						return;
 					case "removeitem":
-						if(response.status === 403) {}
+						if(response.status === 403) {
 							action.dispatch({
 								type:actionConstants.LOGOUT_SUCCESS
 							})						
@@ -151,7 +162,7 @@ const useAction = () => {
 						})						
 						return;
 					case "edititem":
-						if(response.status === 403) {}
+						if(response.status === 403) {
 							action.dispatch({
 								type:actionConstants.LOGOUT_SUCCESS
 							})						
@@ -175,7 +186,7 @@ const useAction = () => {
 		fetchData();
 	},[state])
 	
-	const register = (user) => {
+	const register = (user:User) => {
 		setState({
 			url:"/register",
 			request:{
@@ -188,7 +199,7 @@ const useAction = () => {
 		})
 	}
 	
-	const login = (user) => {
+	const login = (user:User) => {
 		setState({
 			url:"/login",
 			request:{
